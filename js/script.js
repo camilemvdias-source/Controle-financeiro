@@ -10,6 +10,8 @@ const cardSaldo = document.getElementById("saldo");
 
 let transacoes = carregarTransacoes();
 
+let indiceEdicao = null;
+
 // Evento de envio do formulário
 
 formulario.addEventListener("submit", function (event) {
@@ -20,14 +22,13 @@ formulario.addEventListener("submit", function (event) {
 
 });
 
+// Adicionar transação
+
 function adicionarTransacao() {
 
     const descricao = document.getElementById("descricao").value;
-
     const valor = Number(document.getElementById("valor").value);
-
     const data = document.getElementById("data").value;
-
     const tipo = document.getElementById("tipo").value;
 
     const transacao = {
@@ -37,45 +38,55 @@ function adicionarTransacao() {
         tipo
     };
 
-   transacoes.push(transacao);
+    transacoes.push(transacao);
 
-salvarTransacoes(transacoes);
+    salvarTransacoes(transacoes);
 
-atualizarTabela();
+    atualizarTabela();
 
-atualizarResumo();
+    atualizarResumo();
 
-formulario.reset();
+    formulario.reset();
 
 }
+
+// Atualizar tabela
 
 function atualizarTabela() {
 
     listaTransacoes.innerHTML = "";
 
-    transacoes.forEach(function(transacao){
+   transacoes.forEach(function(transacao, index){
 
         listaTransacoes.innerHTML += `
             <tr>
-
                 <td>${transacao.data}</td>
-
                 <td>${transacao.descricao}</td>
-
                 <td>${transacao.tipo}</td>
-
                 <td>R$ ${transacao.valor.toFixed(2)}</td>
+               <td>
+  <td>
 
-                <td>
-                    <button>Excluir</button>
-                </td>
+    <button
+        class="btn-editar"
+        onclick="editarTransacao(${index})">
+        Editar
+    </button>
 
-            </tr>
+    <button
+        class="btn-excluir"
+        onclick="excluirTransacao(${index})">
+        Excluir
+    </button>
+
+</td>
         `;
 
     });
 
 }
+
+// Atualizar cards
 
 function atualizarResumo() {
 
@@ -97,5 +108,44 @@ function atualizarResumo() {
     cardReceitas.textContent = `R$ ${receitas.toFixed(2)}`;
     cardDespesas.textContent = `R$ ${despesas.toFixed(2)}`;
     cardSaldo.textContent = `R$ ${saldo.toFixed(2)}`;
+
+}
+
+// Carregar os dados salvos ao abrir a página
+
+atualizarTabela();
+atualizarResumo();
+
+if (indiceEdicao !== null) {
+
+    transacoes[indiceEdicao] = transacao;
+    indiceEdicao = null;
+
+} else {
+
+    transacoes.push(transacao);
+
+}
+
+salvarTransacoes(transacoes);
+
+atualizarTabela();
+
+atualizarResumo();
+
+formulario.reset();
+
+
+
+function editarTransacao(index) {
+
+    const transacao = transacoes[index];
+
+    indiceEdicao = index;
+
+    document.getElementById("descricao").value = transacao.descricao;
+    document.getElementById("valor").value = transacao.valor;
+    document.getElementById("data").value = transacao.data;
+    document.getElementById("tipo").value = transacao.tipo;
 
 }
