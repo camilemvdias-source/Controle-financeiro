@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -8,15 +10,18 @@
 
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/responsive.css">
+
 </head>
+
 
 <body>
 
-   <header class="header">
+
+<header class="header">
 
     <div class="container">
 
-        <h1>💰 Controle Financeiro</h1>
+        <h1>Controle Financeiro</h1>
 
         <p>
             Sistema para gerenciamento de receitas e despesas,
@@ -28,117 +33,253 @@
 
 </header>
 
-    <main>
 
-        <!-- Cards -->
-      <section id="cards" class="container">
 
-    <div class="card receita">
-        <h3>💵 Receitas</h3>
-        <span id="receitas">R$ 0,00</span>
-    </div>
+<main>
 
-    <div class="card despesa">
-        <h3>💸 Despesas</h3>
-        <span id="despesas">R$ 0,00</span>
-    </div>
 
-    <div class="card saldo">
-        <h3>💰 Saldo</h3>
-        <span id="saldo">R$ 0,00</span>
-    </div>
+    <!-- Cards -->
 
-</section>
+    <section id="cards" class="container">
 
-        <!-- Formulário -->
-       <section id="formulario" class="container">
 
-    <h2>Nova Movimentação</h2>
+        <div class="card receita">
 
-    <form id="form-financeiro">
+            <h3>💵 Receitas</h3>
+
+            <span id="receitas">R$ 0,00</span>
+
+        </div>
+
+
+        <div class="card despesa">
+
+            <h3>💸 Despesas</h3>
+
+            <span id="despesas">R$ 0,00</span>
+
+        </div>
+
+
+        <div class="card saldo">
+
+            <h3>💰 Saldo</h3>
+
+            <span id="saldo">R$ 0,00</span>
+
+        </div>
+
+
+    </section>
+
+
+
+
+    <!-- Formulário -->
+
+
+    <section id="formulario" class="container">
+
+
+        <h2>Nova Movimentação</h2>
+
+
+        <form id="form-financeiro">
+
+
+            <input
+                type="text"
+                id="descricao"
+                placeholder="Descrição"
+                required
+            >
+
+
+            <input
+                type="number"
+                id="valor"
+                placeholder="Valor"
+                step="0.01"
+                required
+            >
+
+
+            <input
+                type="date"
+                id="data"
+                required
+            >
+
+
+            <select id="tipo">
+
+                <option value="receita">
+                    Receita
+                </option>
+
+                <option value="despesa">
+                    Despesa
+                </option>
+
+            </select>
+
+
+            <button type="submit">
+                Adicionar
+            </button>
+
+
+        </form>
+
+
+    </section>
+
+
+
+
+    <!-- Pesquisa -->
+
+
+    <section id="pesquisa" class="container">
+
+
+        <h2>Pesquisar Movimentação</h2>
+
 
         <input
             type="text"
-            id="descricao"
-            placeholder="Descrição"
-            required
+            id="pesquisa-descricao"
+            placeholder="Digite uma descrição..."
         >
 
-        <input
-            type="number"
-            id="valor"
-            placeholder="Valor"
-            step="0.01"
-            required
-        >
 
-        <input
-            type="date"
-            id="data"
-            required
-        >
+        <select id="filtro-tipo">
 
-        <select id="tipo">
 
-            <option value="receita">Receita</option>
+            <option value="todos">
+                Todas
+            </option>
 
-            <option value="despesa">Despesa</option>
+
+            <option value="receita">
+                Receitas
+            </option>
+
+
+            <option value="despesa">
+                Despesas
+            </option>
+
 
         </select>
 
-        <button type="submit">
-            Adicionar
-        </button>
 
-    </form>
 
-</section>
+        <label for="filtro-data">
+            Filtrar por data:
+        </label>
 
-        <!-- Pesquisa -->
-        <section id="pesquisa">
 
-        </section>
+        <input 
+            type="date" 
+            id="filtro-data"
+        >
 
-        <!-- Tabela -->
-       <section id="tabela" class="container">
 
-    <h2>Movimentações</h2>
+    </section>
 
-    <table>
 
-        <thead>
 
-            <tr>
-                <th>Data</th>
-                <th>Descrição</th>
-                <th>Tipo</th>
-                <th>Valor</th>
-                <th>Ações</th>
-            </tr>
 
-        </thead>
 
-        <tbody id="lista-transacoes">
+    <!-- Tabela -->
 
-            <!-- As movimentações serão adicionadas pelo JavaScript -->
 
-        </tbody>
+    <section id="tabela" class="container">
 
-    </table>
 
-</section>
+        <h2>Movimentações</h2>
 
-        <!-- Gráfico -->
-        <section id="grafico">
 
-        </section>
+        <table>
 
-    </main>
 
-    <script src="js/storage.js"></script>
-    <script src="js/finance.js"></script>
-    <script src="js/chart.js"></script>
-    <script src="js/script.js"></script>
+            <thead>
+
+
+                <tr>
+
+                    <th>Data</th>
+
+                    <th>Descrição</th>
+
+                    <th>Tipo</th>
+
+                    <th>Valor</th>
+
+                    <th>Ações</th>
+
+                </tr>
+
+
+            </thead>
+
+
+
+            <tbody id="lista-transacoes">
+
+
+            </tbody>
+
+
+
+        </table>
+
+
+    </section>
+
+
+
+
+
+    <!-- Gráfico -->
+
+
+    <section id="grafico" class="container">
+
+
+        <h2>Resumo Financeiro</h2>
+
+
+        <canvas id="graficoFinanceiro"></canvas>
+
+
+    </section>
+
+
+
+</main>
+
+
+
+
+
+<!-- Scripts -->
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+<script src="js/storage.js"></script>
+
+<script src="js/finance.js"></script>
+
+<script src="js/chart.js"></script>
+
+<script src="js/script.js"></script>
+
+
 
 </body>
+
 </html>

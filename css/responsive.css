@@ -1,0 +1,249 @@
+/* =========================
+   Responsividade
+========================= */
+
+
+/* Tablets */
+
+@media (max-width: 900px){
+
+
+    .container{
+
+        width:92%;
+
+    }
+
+
+
+    /* Header */
+
+    .header{
+
+        padding:50px 0;
+
+    }
+
+
+    .header h1{
+
+        font-size:34px;
+
+    }
+
+
+    .header p{
+
+        font-size:16px;
+
+    }
+
+
+
+
+    /* Cards */
+
+    #cards{
+
+        grid-template-columns:1fr;
+
+        margin-top:30px;
+
+    }
+
+
+    .card{
+
+        padding:25px;
+
+    }
+
+
+
+
+
+    /* Formulário */
+
+    #form-financeiro{
+
+        grid-template-columns:1fr;
+
+    }
+
+
+    #form-financeiro input,
+    #form-financeiro select,
+    #form-financeiro button{
+
+        width:100%;
+
+        height:45px;
+
+    }
+
+
+
+
+
+    /* Pesquisa */
+
+    #pesquisa input,
+    #pesquisa select{
+
+        width:100%;
+
+        margin-bottom:15px;
+
+    }
+
+
+
+
+
+    /* Tabela */
+
+    #tabela{
+
+        padding:20px;
+
+        overflow-x:auto;
+
+    }
+
+
+    table{
+
+        min-width:700px;
+
+    }
+
+
+
+
+    /* Gráfico */
+
+    #grafico{
+
+        padding:20px;
+
+    }
+
+
+    #graficoFinanceiro{
+
+        width:100% !important;
+
+        height:auto !important;
+
+    }
+
+
+}
+
+
+
+
+
+/* Celulares */
+
+@media (max-width:600px){
+
+
+    .container{
+
+        width:94%;
+
+    }
+
+
+
+    /* Header */
+
+    .header h1{
+
+        font-size:28px;
+
+    }
+
+
+    .header p{
+
+        font-size:14px;
+
+    }
+
+
+
+
+    /* Cards */
+
+    .card span{
+
+        font-size:26px;
+
+    }
+
+
+
+
+    /* Formulário */
+
+    #formulario,
+    #pesquisa,
+    #tabela,
+    #grafico{
+
+        padding:20px;
+
+        border-radius:15px;
+
+    }
+
+
+
+    #formulario h2,
+    #tabela h2,
+    #grafico h2{
+
+        font-size:20px;
+
+    }
+
+
+
+
+    /* Botões */
+
+    button{
+
+        width:100%;
+
+    }
+
+
+
+
+    /* Tabela */
+
+    th,
+    td{
+
+        padding:12px;
+
+        font-size:14px;
+
+    }
+
+
+
+
+    /* Gráfico */
+
+    #graficoFinanceiro{
+
+        max-width:100%;
+
+    }
+
+
+}
