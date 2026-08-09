@@ -1,26 +1,40 @@
-// ==========================================
+// ======================================================
 // CONTROLE FINANCEIRO
-// JavaScript
-// ==========================================
+// Projeto desenvolvido com foco em JavaScript
+// ======================================================
 
 
-// ==========================================
-// 1. ELEMENTOS DO HTML
-// ==========================================
+// ======================================================
+// 1. CONFIGURAÇÕES
+// ======================================================
+
+const CHAVE_STORAGE = "transacoes";
+
+let transacoes = carregarDados();
+
+let idEmEdicao = null;
+
+let grafico = null;
+
+
+// ======================================================
+// 2. SELEÇÃO DOS ELEMENTOS DO HTML
+// ======================================================
 
 const formulario = document.getElementById("form-financeiro");
 
-const campoDescricao = document.getElementById("descricao");
+const descricaoInput = document.getElementById("descricao");
 
-const campoValor = document.getElementById("valor");
+const valorInput = document.getElementById("valor");
 
-const campoData = document.getElementById("data");
+const dataInput = document.getElementById("data");
 
-const campoTipo = document.getElementById("tipo");
+const tipoInput = document.getElementById("tipo");
 
-const listaTransacoes = document.getElementById("lista-transacoes");
+const listaTransacoes =
+    document.getElementById("lista-transacoes");
 
-const pesquisaDescricao =
+const pesquisaInput =
     document.getElementById("pesquisa-descricao");
 
 const filtroTipo =
@@ -29,17 +43,14 @@ const filtroTipo =
 const filtroData =
     document.getElementById("filtro-data");
 
-const cardReceitas =
+const receitasElement =
     document.getElementById("receitas");
 
-const cardDespesas =
+const despesasElement =
     document.getElementById("despesas");
 
-const cardSaldo =
+const saldoElement =
     document.getElementById("saldo");
-
-const contadorRegistros =
-    document.getElementById("contador-registros");
 
 const resumoReceitas =
     document.getElementById("resumo-receitas");
@@ -50,125 +61,157 @@ const resumoDespesas =
 const resumoSaldo =
     document.getElementById("resumo-saldo");
 
+const contadorRegistros =
+    document.getElementById("contador-registros");
+
 const botaoSubmit =
     document.getElementById("btn-submit");
 
 
-// ==========================================
-// 2. ESTADO DA APLICAÇÃO
-// ==========================================
-
-// Carrega as transações salvas no localStorage
-
-let transacoes = carregarTransacoes();
-
-
-// Guarda o ID da transação que está sendo editada
-
-let transacaoEditando = null;
-
-
-// ==========================================
+// ======================================================
 // 3. EVENTOS
-// ==========================================
+// ======================================================
 
-// Envio do formulário
-
-formulario.addEventListener(
+formulario?.addEventListener(
     "submit",
     adicionarTransacao
 );
 
-
-// Pesquisa por descrição
-
-pesquisaDescricao.addEventListener(
+pesquisaInput?.addEventListener(
     "input",
     atualizarTabela
 );
 
+filtroTipo?.addEventListener(
+    "change",
+    atualizarTabela
+);
 
-// Filtro por tipo
-
-filtroTipo.addEventListener(
+filtroData?.addEventListener(
     "change",
     atualizarTabela
 );
 
 
-// Filtro por data
+// ======================================================
+// 4. LOCAL STORAGE
+// ======================================================
 
-filtroData.addEventListener(
-    "change",
-    atualizarTabela
-);
+function carregarDados() {
+
+    const dados =
+        localStorage.getItem(
+            CHAVE_STORAGE
+        );
+
+    if (!dados) {
+
+        return [];
+
+    }
+
+    try {
+
+        return JSON.parse(dados);
+
+    }
+
+    catch (erro) {
+
+        console.error(
+            "Erro ao carregar dados:",
+            erro
+        );
+
+        return [];
+
+    }
+
+}
 
 
-// ==========================================
-// 4. ADICIONAR TRANSAÇÃO
-// ==========================================
+function salvarDados() {
+
+    localStorage.setItem(
+        CHAVE_STORAGE,
+        JSON.stringify(transacoes)
+    );
+
+}
+
+
+// ======================================================
+// 5. ADICIONAR TRANSAÇÃO
+// ======================================================
 
 function adicionarTransacao(event) {
 
     event.preventDefault();
 
 
-    // Captura os valores do formulário
-
     const descricao =
-        campoDescricao.value.trim();
+        descricaoInput.value.trim();
 
     const valor =
-        Number(campoValor.value);
+        Number(valorInput.value);
 
     const data =
-        campoData.value;
+        dataInput.value;
 
     const tipo =
-        campoTipo.value;
+        tipoInput.value;
 
 
-    // ======================================
+    // ------------------------------------------
     // VALIDAÇÃO
-    // ======================================
+    // ------------------------------------------
 
-    if (descricao === "") {
+    if (!descricao) {
 
-        alert("Digite uma descrição.");
+        mostrarMensagem(
+            "Digite uma descrição."
+        );
 
-        campoDescricao.focus();
+        descricaoInput.focus();
 
         return;
+
     }
 
 
-    if (valor <= 0 || isNaN(valor)) {
+    if (!valor || valor <= 0) {
 
-        alert("Digite um valor válido.");
+        mostrarMensagem(
+            "Digite um valor válido."
+        );
 
-        campoValor.focus();
+        valorInput.focus();
 
         return;
+
     }
 
 
-    if (data === "") {
+    if (!data) {
 
-        alert("Selecione uma data.");
+        mostrarMensagem(
+            "Selecione uma data."
+        );
 
-        campoData.focus();
+        dataInput.focus();
 
         return;
+
     }
 
 
-    // ======================================
-    // OBJETO DA TRANSAÇÃO
-    // ======================================
+    // ------------------------------------------
+    // CRIAÇÃO DO OBJETO
+    // ------------------------------------------
 
     const novaTransacao = {
 
-        id: Date.now(),
+        id: idEmEdicao || Date.now(),
 
         descricao: descricao,
 
@@ -181,19 +224,19 @@ function adicionarTransacao(event) {
     };
 
 
-    // ======================================
-    // EDITAR OU ADICIONAR
-    // ======================================
+    // ------------------------------------------
+    // VERIFICA SE É EDIÇÃO
+    // ------------------------------------------
 
-    if (transacaoEditando !== null) {
+    if (idEmEdicao) {
 
         transacoes =
             transacoes.map(
-                function (transacao) {
+                transacao => {
 
                     if (
                         transacao.id ===
-                        transacaoEditando
+                        idEmEdicao
                     ) {
 
                         return novaTransacao;
@@ -206,11 +249,8 @@ function adicionarTransacao(event) {
             );
 
 
-        transacaoEditando = null;
-
-
-        alterarTextoBotao(
-            "Adicionar movimentação"
+        mostrarMensagem(
+            "Movimentação atualizada!"
         );
 
     }
@@ -221,79 +261,98 @@ function adicionarTransacao(event) {
             novaTransacao
         );
 
+
+        mostrarMensagem(
+            "Movimentação adicionada!"
+        );
+
     }
 
 
-    // ======================================
+    // ------------------------------------------
     // SALVAR
-    // ======================================
+    // ------------------------------------------
 
-    salvarTransacoes(
-        transacoes
+    salvarDados();
+
+
+    // ------------------------------------------
+    // RESETAR MODO DE EDIÇÃO
+    // ------------------------------------------
+
+    idEmEdicao = null;
+
+
+    alterarBotao(
+        "Adicionar"
     );
 
 
-    // ======================================
-    // ATUALIZAR A INTERFACE
-    // ======================================
-
-    atualizarTudo();
-
-
-    // ======================================
+    // ------------------------------------------
     // LIMPAR FORMULÁRIO
-    // ======================================
+    // ------------------------------------------
 
     formulario.reset();
+
+
+    // ------------------------------------------
+    // ATUALIZAR A APLICAÇÃO
+    // ------------------------------------------
+
+    atualizarAplicacao();
 
 }
 
 
-// ==========================================
-// 5. FILTRAR TRANSAÇÕES
-// ==========================================
+// ======================================================
+// 6. FILTRAR TRANSAÇÕES
+// ======================================================
 
 function obterTransacoesFiltradas() {
 
-    const texto =
-        pesquisaDescricao.value
+    const pesquisa =
+        pesquisaInput?.value
             .toLowerCase()
-            .trim();
+            .trim() || "";
 
-    const tipo =
-        filtroTipo.value;
 
-    const data =
-        filtroData.value;
+    const tipoSelecionado =
+        filtroTipo?.value || "todos";
+
+
+    const dataSelecionada =
+        filtroData?.value || "";
 
 
     return transacoes.filter(
-        function (transacao) {
+        transacao => {
 
             // Pesquisa pela descrição
 
-            const correspondeTexto =
+            const correspondePesquisa =
                 transacao.descricao
                     .toLowerCase()
-                    .includes(texto);
+                    .includes(pesquisa);
 
 
-            // Filtro pelo tipo
+            // Filtro de receita/despesa
 
             const correspondeTipo =
-                tipo === "todos" ||
-                transacao.tipo === tipo;
+                tipoSelecionado === "todos" ||
+                transacao.tipo ===
+                tipoSelecionado;
 
 
-            // Filtro pela data
+            // Filtro de data
 
             const correspondeData =
-                data === "" ||
-                transacao.data === data;
+                !dataSelecionada ||
+                transacao.data ===
+                dataSelecionada;
 
 
             return (
-                correspondeTexto &&
+                correspondePesquisa &&
                 correspondeTipo &&
                 correspondeData
             );
@@ -304,35 +363,37 @@ function obterTransacoesFiltradas() {
 }
 
 
-// ==========================================
-// 6. ATUALIZAR TABELA
-// ==========================================
+// ======================================================
+// 7. RENDERIZAR TABELA
+// ======================================================
 
 function atualizarTabela() {
+
+    if (!listaTransacoes) {
+
+        return;
+
+    }
+
 
     listaTransacoes.innerHTML = "";
 
 
-    const transacoesFiltradas =
+    const lista =
         obterTransacoesFiltradas();
 
 
-    // ======================================
+    // ------------------------------------------
     // NENHUM RESULTADO
-    // ======================================
+    // ------------------------------------------
 
-    if (
-        transacoesFiltradas.length === 0
-    ) {
+    if (lista.length === 0) {
 
         listaTransacoes.innerHTML = `
 
             <tr>
 
-                <td
-                    colspan="5"
-                    class="empty-state"
-                >
+                <td colspan="5">
 
                     Nenhuma movimentação encontrada.
 
@@ -346,58 +407,43 @@ function atualizarTabela() {
         atualizarContador(0);
 
         return;
+
     }
 
 
-    // ======================================
-    // CRIAR AS LINHAS
-    // ======================================
+    // ------------------------------------------
+    // CRIAR LINHAS
+    // ------------------------------------------
 
-    transacoesFiltradas.forEach(
-        function (transacao) {
+    lista.forEach(
+        transacao => {
 
             const linha =
                 document.createElement("tr");
 
 
-            const dataFormatada =
+            const data =
                 formatarData(
                     transacao.data
                 );
 
 
-            const valorFormatado =
+            const valor =
                 formatarMoeda(
                     transacao.valor
                 );
 
 
-            const tipoTexto =
+            const tipo =
                 transacao.tipo === "receita"
                     ? "Receita"
                     : "Despesa";
 
 
-            const classeTipo =
-                transacao.tipo === "receita"
-                    ? "tipo-receita"
-                    : "tipo-despesa";
-
-
-            const classeValor =
-                transacao.tipo === "receita"
-                    ? "valor-receita"
-                    : "valor-despesa";
-
-
-            // ==================================
-            // CONTEÚDO DA LINHA
-            // ==================================
-
             linha.innerHTML = `
 
                 <td>
-                    ${dataFormatada}
+                    ${data}
                 </td>
 
                 <td>
@@ -405,70 +451,62 @@ function atualizarTabela() {
                 </td>
 
                 <td>
-
-                    <span
-                        class="tipo-badge ${classeTipo}"
-                    >
-
-                        ${tipoTexto}
-
+                    <span class="
+                        tipo-badge
+                        ${
+                            transacao.tipo === "receita"
+                                ? "tipo-receita"
+                                : "tipo-despesa"
+                        }
+                    ">
+                        ${tipo}
                     </span>
-
                 </td>
 
-                <td
-                    class="${classeValor}"
-                >
-
-                    ${valorFormatado}
-
+                <td class="
+                    ${
+                        transacao.tipo === "receita"
+                            ? "valor-receita"
+                            : "valor-despesa"
+                    }
+                ">
+                    ${valor}
                 </td>
 
                 <td>
 
-                    <div class="acoes">
+                    <button
+                        class="btn-editar"
+                        data-id="${transacao.id}"
+                    >
+                        Editar
+                    </button>
 
-                        <button
-                            class="btn-editar"
-                            title="Editar"
-                            data-id="${transacao.id}"
-                        >
-
-                            Editar
-
-                        </button>
-
-
-                        <button
-                            class="btn-excluir"
-                            title="Excluir"
-                            data-id="${transacao.id}"
-                        >
-
-                            Excluir
-
-                        </button>
-
-                    </div>
+                    <button
+                        class="btn-excluir"
+                        data-id="${transacao.id}"
+                    >
+                        Excluir
+                    </button>
 
                 </td>
 
             `;
 
 
-            // ==================================
+            // ----------------------------------
             // BOTÃO EDITAR
-            // ==================================
+            // ----------------------------------
 
-            const botaoEditar =
+            const editar =
                 linha.querySelector(
                     ".btn-editar"
                 );
 
 
-            botaoEditar.addEventListener(
+            editar.addEventListener(
                 "click",
-                function () {
+                () => {
 
                     editarTransacao(
                         transacao.id
@@ -478,19 +516,19 @@ function atualizarTabela() {
             );
 
 
-            // ==================================
+            // ----------------------------------
             // BOTÃO EXCLUIR
-            // ==================================
+            // ----------------------------------
 
-            const botaoExcluir =
+            const excluir =
                 linha.querySelector(
                     ".btn-excluir"
                 );
 
 
-            botaoExcluir.addEventListener(
+            excluir.addEventListener(
                 "click",
-                function () {
+                () => {
 
                     excluirTransacao(
                         transacao.id
@@ -499,10 +537,6 @@ function atualizarTabela() {
                 }
             );
 
-
-            // ==================================
-            // ADICIONAR LINHA À TABELA
-            // ==================================
 
             listaTransacoes.appendChild(
                 linha
@@ -513,106 +547,72 @@ function atualizarTabela() {
 
 
     atualizarContador(
-        transacoesFiltradas.length
+        lista.length
     );
 
 }
 
 
-// ==========================================
-// 7. CONTADOR
-// ==========================================
-
-function atualizarContador(
-    quantidade
-) {
-
-    if (!contadorRegistros) {
-        return;
-    }
-
-
-    if (quantidade === 0) {
-
-        contadorRegistros.textContent =
-            "Nenhuma movimentação encontrada";
-
-        return;
-    }
-
-
-    contadorRegistros.textContent =
-        `Mostrando ${quantidade} de ${transacoes.length} movimentações`;
-
-}
-
-
-// ==========================================
+// ======================================================
 // 8. EDITAR TRANSAÇÃO
-// ==========================================
+// ======================================================
 
 function editarTransacao(id) {
 
     const transacao =
         transacoes.find(
-            function (item) {
-
-                return item.id === id;
-
-            }
+            item => item.id === id
         );
 
 
     if (!transacao) {
+
         return;
+
     }
 
 
-    // Coloca os dados no formulário
-
-    campoDescricao.value =
+    descricaoInput.value =
         transacao.descricao;
 
-    campoValor.value =
+
+    valorInput.value =
         transacao.valor;
 
-    campoData.value =
+
+    dataInput.value =
         transacao.data;
 
-    campoTipo.value =
+
+    tipoInput.value =
         transacao.tipo;
 
 
-    // Guarda o ID que está sendo editado
-
-    transacaoEditando = id;
+    idEmEdicao = id;
 
 
-    // Muda o texto do botão
-
-    alterarTextoBotao(
+    alterarBotao(
         "Salvar alteração"
     );
 
 
-    // Leva o usuário até o formulário
+    descricaoInput.focus();
 
-    document
-        .getElementById("formulario")
-        .scrollIntoView({
 
-            behavior: "smooth",
+    window.scrollTo({
 
-            block: "center"
+        top: 300,
 
-        });
+        behavior: "smooth"
+
+    });
 
 }
 
 
-// ==========================================
+// ======================================================
 // 9. EXCLUIR TRANSAÇÃO
-// ==========================================
+// ======================================================
 
 function excluirTransacao(id) {
 
@@ -623,114 +623,159 @@ function excluirTransacao(id) {
 
 
     if (!confirmar) {
+
         return;
+
     }
 
 
-    // Remove pelo ID
-
     transacoes =
         transacoes.filter(
-            function (transacao) {
-
-                return transacao.id !== id;
-
-            }
+            transacao =>
+                transacao.id !== id
         );
 
 
-    // Salva novamente
+    salvarDados();
 
-    salvarTransacoes(
-        transacoes
+
+    mostrarMensagem(
+        "Movimentação excluída!"
     );
 
 
-    // Atualiza a aplicação
-
-    atualizarTudo();
+    atualizarAplicacao();
 
 }
 
 
-// ==========================================
-// 10. CALCULAR RESUMO
-// ==========================================
+// ======================================================
+// 10. CALCULAR RECEITAS
+// ======================================================
 
-function calcularResumo() {
+function calcularReceitas() {
 
-    let receitas = 0;
+    return transacoes
+        .filter(
+            transacao =>
+                transacao.tipo === "receita"
+        )
+        .reduce(
+            (
+                total,
+                transacao
+            ) => {
 
-    let despesas = 0;
-
-
-    transacoes.forEach(
-        function (transacao) {
-
-            if (
-                transacao.tipo ===
-                "receita"
-            ) {
-
-                receitas +=
+                return total +
                     Number(
                         transacao.valor
                     );
 
-            }
+            },
+            0
+        );
 
-            else if (
-                transacao.tipo ===
-                "despesa"
-            ) {
+}
 
-                despesas +=
+
+// ======================================================
+// 11. CALCULAR DESPESAS
+// ======================================================
+
+function calcularDespesas() {
+
+    return transacoes
+        .filter(
+            transacao =>
+                transacao.tipo === "despesa"
+        )
+        .reduce(
+            (
+                total,
+                transacao
+            ) => {
+
+                return total +
                     Number(
                         transacao.valor
                     );
 
-            }
+            },
+            0
+        );
 
-        }
-    );
+}
+
+
+// ======================================================
+// 12. CALCULAR SALDO
+// ======================================================
+
+function calcularSaldo() {
+
+    const receitas =
+        calcularReceitas();
+
+
+    const despesas =
+        calcularDespesas();
+
+
+    return receitas - despesas;
+
+}
+
+
+// ======================================================
+// 13. ATUALIZAR RESUMO
+// ======================================================
+
+function atualizarResumo() {
+
+    const receitas =
+        calcularReceitas();
+
+
+    const despesas =
+        calcularDespesas();
 
 
     const saldo =
         receitas - despesas;
 
 
-    // ======================================
-    // CARDS
-    // ======================================
+    // Cards principais
 
-    cardReceitas.textContent =
-        formatarMoeda(
-            receitas
-        );
+    if (receitasElement) {
 
+        receitasElement.textContent =
+            formatarMoeda(receitas);
 
-    cardDespesas.textContent =
-        formatarMoeda(
-            despesas
-        );
+    }
 
 
-    cardSaldo.textContent =
-        formatarMoeda(
-            saldo
-        );
+    if (despesasElement) {
+
+        despesasElement.textContent =
+            formatarMoeda(despesas);
+
+    }
 
 
-    // ======================================
-    // RESUMO
-    // ======================================
+    if (saldoElement) {
+
+        saldoElement.textContent =
+            formatarMoeda(saldo);
+
+    }
+
+
+    // Resumo
 
     if (resumoReceitas) {
 
         resumoReceitas.textContent =
-            formatarMoeda(
-                receitas
-            );
+            formatarMoeda(receitas);
 
     }
 
@@ -738,9 +783,7 @@ function calcularResumo() {
     if (resumoDespesas) {
 
         resumoDespesas.textContent =
-            formatarMoeda(
-                despesas
-            );
+            formatarMoeda(despesas);
 
     }
 
@@ -748,18 +791,238 @@ function calcularResumo() {
     if (resumoSaldo) {
 
         resumoSaldo.textContent =
-            formatarMoeda(
-                saldo
+            formatarMoeda(saldo);
+
+    }
+
+
+    // Altera visual do saldo
+
+    if (saldoElement) {
+
+        saldoElement.classList.remove(
+            "saldo-positivo",
+            "saldo-negativo"
+        );
+
+
+        if (saldo < 0) {
+
+            saldoElement.classList.add(
+                "saldo-negativo"
             );
+
+        }
+
+        else {
+
+            saldoElement.classList.add(
+                "saldo-positivo"
+            );
+
+        }
 
     }
 
 }
 
 
-// ==========================================
-// 11. FORMATAR MOEDA
-// ==========================================
+// ======================================================
+// 14. CONTADOR DE MOVIMENTAÇÕES
+// ======================================================
+
+function atualizarContador(
+    quantidade
+) {
+
+    if (!contadorRegistros) {
+
+        return;
+
+    }
+
+
+    if (quantidade === 0) {
+
+        contadorRegistros.textContent =
+            "Nenhuma movimentação encontrada";
+
+        return;
+
+    }
+
+
+    contadorRegistros.textContent =
+        `Mostrando ${quantidade} de ${transacoes.length} movimentações`;
+
+}
+
+
+// ======================================================
+// 15. GRÁFICO
+// ======================================================
+
+function criarGrafico() {
+
+    const canvas =
+        document.getElementById(
+            "graficoFinanceiro"
+        );
+
+
+    if (!canvas) {
+
+        return;
+
+    }
+
+
+    // Verifica se Chart.js está carregado
+
+    if (
+        typeof Chart === "undefined"
+    ) {
+
+        console.warn(
+            "Chart.js não foi carregado."
+        );
+
+        return;
+
+    }
+
+
+    const receitas =
+        calcularReceitas();
+
+
+    const despesas =
+        calcularDespesas();
+
+
+    // Destrói gráfico anterior
+
+    if (grafico) {
+
+        grafico.destroy();
+
+    }
+
+
+    grafico =
+        new Chart(
+            canvas,
+            {
+
+                type: "doughnut",
+
+                data: {
+
+                    labels: [
+                        "Receitas",
+                        "Despesas"
+                    ],
+
+                    datasets: [
+
+                        {
+
+                            data: [
+                                receitas,
+                                despesas
+                            ],
+
+                            borderWidth: 0
+
+                        }
+
+                    ]
+
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    plugins: {
+
+                        legend: {
+
+                            position: "bottom"
+
+                        },
+
+                        tooltip: {
+
+                            callbacks: {
+
+                                label:
+                                    function (
+                                        contexto
+                                    ) {
+
+                                        const valor =
+                                            contexto.raw;
+
+
+                                        return (
+                                            " " +
+                                            formatarMoeda(
+                                                valor
+                                            )
+                                        );
+
+                                    }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+        );
+
+}
+
+
+// ======================================================
+// 16. ORDENAR POR DATA
+// ======================================================
+
+function ordenarPorData() {
+
+    transacoes.sort(
+        (
+            a,
+            b
+        ) => {
+
+            return new Date(
+                b.data
+            ) - new Date(
+                a.data
+            );
+
+        }
+    );
+
+
+    salvarDados();
+
+
+    atualizarAplicacao();
+
+}
+
+
+// ======================================================
+// 17. FORMATAR MOEDA
+// ======================================================
 
 function formatarMoeda(valor) {
 
@@ -777,14 +1040,16 @@ function formatarMoeda(valor) {
 }
 
 
-// ==========================================
-// 12. FORMATAR DATA
-// ==========================================
+// ======================================================
+// 18. FORMATAR DATA
+// ======================================================
 
 function formatarData(data) {
 
     if (!data) {
+
         return "-";
+
     }
 
 
@@ -793,23 +1058,33 @@ function formatarData(data) {
 
 
     if (partes.length !== 3) {
+
         return data;
+
     }
 
 
-    return `${partes[2]}/${partes[1]}/${partes[0]}`;
+    return (
+        partes[2] +
+        "/" +
+        partes[1] +
+        "/" +
+        partes[0]
+    );
 
 }
 
 
-// ==========================================
-// 13. ALTERAR TEXTO DO BOTÃO
-// ==========================================
+// ======================================================
+// 19. ALTERAR BOTÃO
+// ======================================================
 
-function alterarTextoBotao(texto) {
+function alterarBotao(texto) {
 
     if (!botaoSubmit) {
+
         return;
+
     }
 
 
@@ -826,36 +1101,75 @@ function alterarTextoBotao(texto) {
 
     }
 
-}
+    else {
 
-
-// ==========================================
-// 14. ATUALIZAR TUDO
-// ==========================================
-
-function atualizarTudo() {
-
-    atualizarTabela();
-
-    calcularResumo();
-
-
-    // Atualiza o gráfico
-
-    if (
-        typeof criarGrafico ===
-        "function"
-    ) {
-
-        criarGrafico();
+        botaoSubmit.textContent =
+            texto;
 
     }
 
 }
 
 
-// ==========================================
-// 15. INICIALIZAÇÃO
-// ==========================================
+// ======================================================
+// 20. MENSAGEM PARA O USUÁRIO
+// ======================================================
 
-atualizarTudo();
+function mostrarMensagem(texto) {
+
+    const mensagem =
+        document.createElement(
+            "div"
+        );
+
+
+    mensagem.textContent =
+        texto;
+
+
+    mensagem.className =
+        "mensagem-js";
+
+
+    document.body.appendChild(
+        mensagem
+    );
+
+
+    setTimeout(
+        () => {
+
+            mensagem.remove();
+
+        },
+        2500
+    );
+
+}
+
+
+// ======================================================
+// 21. ATUALIZAR TODA A APLICAÇÃO
+// ======================================================
+
+function atualizarAplicacao() {
+
+    atualizarTabela();
+
+    atualizarResumo();
+
+    criarGrafico();
+
+}
+
+
+// ======================================================
+// 22. INICIALIZAÇÃO
+// ======================================================
+
+atualizarAplicacao();
+
+
+// ======================================================
+// FIM DO JAVASCRIPT
+// ======================================================
