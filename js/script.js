@@ -1,89 +1,290 @@
-// Selecionando os elementos da página
+// ================================
+// ELEMENTOS DA PÁGINA
+// ================================
 
 const formulario = document.getElementById("form-financeiro");
-const campoPesquisa = document.getElementById("pesquisa-descricao");
-const filtroData = document.getElementById("filtro-data");
-const filtroTipo = document.getElementById("filtro-tipo");
-const listaTransacoes = document.getElementById("lista-transacoes");
-const cardReceitas = document.getElementById("receitas");
-const cardDespesas = document.getElementById("despesas");
-const cardSaldo = document.getElementById("saldo");
+
+const campoDescricao =
+    document.getElementById("pesquisa-descricao");
+
+const filtroTipo =
+    document.getElementById("filtro-tipo");
+
+const filtroData =
+    document.getElementById("filtro-data");
+
+const listaTransacoes =
+    document.getElementById("lista-transacoes");
+
+const cardReceitas =
+    document.getElementById("receitas");
+
+const cardDespesas =
+    document.getElementById("despesas");
+
+const cardSaldo =
+    document.getElementById("saldo");
+
+const contadorRegistros =
+    document.getElementById("contador-registros");
+
+const resumoReceitas =
+    document.getElementById("resumo-receitas");
+
+const resumoDespesas =
+    document.getElementById("resumo-despesas");
+
+const resumoSaldo =
+    document.getElementById("resumo-saldo");
+
+const botaoSubmit =
+    document.getElementById("btn-submit");
 
 
-// Vetor que armazenará as movimentações
+// ================================
+// DADOS
+// ================================
 
 let transacoes = carregarTransacoes();
 
 let indiceEdicao = null;
 
 
-// Evento de envio do formulário
+// ================================
+// FORMATAÇÃO DE VALORES
+// ================================
 
-formulario.addEventListener("submit", function (event) {
+function formatarMoeda(valor) {
 
-    event.preventDefault();
+    return Number(valor).toLocaleString(
+        "pt-BR",
+        {
+            style: "currency",
+            currency: "BRL"
+        }
+    );
 
-    adicionarTransacao();
-
-});
-
-
-// Evento de pesquisa
-
-campoPesquisa.addEventListener("input", function () {
-
-    atualizarTabela();
-
-});
-
-// Evento de filtro por data
-
-filtroData.addEventListener("change", function () {
-
-    atualizarTabela();
-
-});
-
-// Evento de filtro
-
-filtroTipo.addEventListener("change", function () {
-
-    atualizarTabela();
-
-});
+}
 
 
-// Adicionar transação
+// ================================
+// FORMATAÇÃO DE DATA
+// ================================
+
+function formatarData(data) {
+
+    if (!data) {
+        return "-";
+    }
+
+    const partes = data.split("-");
+
+    const ano = partes[0];
+    const mes = partes[1];
+    const dia = partes[2];
+
+    return `${dia}/${mes}/${ano}`;
+}
+
+
+// ================================
+// ÍCONE EDITAR
+// ================================
+
+const iconeEditar = `
+
+<svg
+    viewBox="0 0 24 24"
+    fill="none"
+>
+
+    <path
+        d="M4 20h4L19 9a2.1 2.1 0 0 0-4-4L4 16v4Z"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+    />
+
+</svg>
+
+`;
+
+
+// ================================
+// ÍCONE EXCLUIR
+// ================================
+
+const iconeExcluir = `
+
+<svg
+    viewBox="0 0 24 24"
+    fill="none"
+>
+
+    <path
+        d="M4 7h16"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+    />
+
+    <path
+        d="M9 7V4h6v3"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+    />
+
+    <path
+        d="M7 7l1 13h8l1-13"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+    />
+
+    <path
+        d="M10 11v5"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+    />
+
+    <path
+        d="M14 11v5"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+    />
+
+</svg>
+
+`;
+
+
+// ================================
+// EVENTOS
+// ================================
+
+formulario.addEventListener(
+    "submit",
+    function (event) {
+
+        event.preventDefault();
+
+        adicionarTransacao();
+
+    }
+);
+
+
+campoDescricao.addEventListener(
+    "input",
+    atualizarTabela
+);
+
+
+filtroTipo.addEventListener(
+    "change",
+    atualizarTabela
+);
+
+
+filtroData.addEventListener(
+    "change",
+    atualizarTabela
+);
+
+
+// ================================
+// ADICIONAR TRANSAÇÃO
+// ================================
 
 function adicionarTransacao() {
 
-    const descricao = document.getElementById("descricao").value;
-    const valor = Number(document.getElementById("valor").value);
-    const data = document.getElementById("data").value;
-    const tipo = document.getElementById("tipo").value;
+    const descricao =
+        document.getElementById("descricao")
+            .value
+            .trim();
+
+    const valor =
+        Number(
+            document.getElementById("valor").value
+        );
+
+    const data =
+        document.getElementById("data").value;
+
+    const tipo =
+        document.getElementById("tipo").value;
+
+
+    // Verificação
+
+    if (
+        descricao === "" ||
+        !valor ||
+        valor <= 0 ||
+        data === ""
+    ) {
+
+        alert(
+            "Preencha todos os campos corretamente."
+        );
+
+        return;
+    }
 
 
     const transacao = {
-        descricao,
-        valor,
-        data,
-        tipo
+
+        descricao: descricao,
+
+        valor: valor,
+
+        data: data,
+
+        tipo: tipo
+
     };
 
 
+    // Se estiver editando
+
     if (indiceEdicao !== null) {
 
-        transacoes[indiceEdicao] = transacao;
+        transacoes[indiceEdicao] =
+            transacao;
+
         indiceEdicao = null;
 
-    } else {
 
-        transacoes.push(transacao);
+        botaoSubmit.querySelector(
+            "span"
+        ).textContent =
+            "Adicionar movimentação";
+
+    }
+
+    // Caso seja uma nova movimentação
+
+    else {
+
+        transacoes.push(
+            transacao
+        );
 
     }
 
 
-    salvarTransacoes(transacoes);
+    // Salvar
+
+    salvarTransacoes(
+        transacoes
+    );
+
+
+    // Atualizar sistema
 
     atualizarTabela();
 
@@ -91,66 +292,85 @@ function adicionarTransacao() {
 
     criarGrafico();
 
+
+    // Limpar formulário
+
     formulario.reset();
 
 }
 
 
-
-// Atualizar tabela
+// ================================
+// ATUALIZAR TABELA
+// ================================
 
 function atualizarTabela() {
 
     listaTransacoes.innerHTML = "";
 
 
-    const pesquisa = campoPesquisa.value.toLowerCase();
-    const tipoSelecionado = filtroTipo.value;
-    const dataSelecionada = filtroData.value;
+    const pesquisa =
+        campoDescricao.value
+            .toLowerCase()
+            .trim();
 
 
-    transacoes.forEach(function(transacao, index) {
+    const tipoSelecionado =
+        filtroTipo.value;
 
 
-        if (!transacao.descricao.toLowerCase().includes(pesquisa)) {
-            return;
-        }
+    const dataSelecionada =
+        filtroData.value;
 
 
-        if (tipoSelecionado !== "todos" && transacao.tipo !== tipoSelecionado) {
-            return;
-        }
+    // Filtrar
 
-        if (dataSelecionada !== "" && transacao.data !== dataSelecionada) {
-    return;
-}
+    const filtradas =
+        transacoes.filter(
+            function (transacao) {
 
-        listaTransacoes.innerHTML += `
+                const correspondeDescricao =
+                    transacao.descricao
+                        .toLowerCase()
+                        .includes(pesquisa);
+
+
+                const correspondeTipo =
+                    tipoSelecionado === "todos" ||
+                    transacao.tipo ===
+                    tipoSelecionado;
+
+
+                const correspondeData =
+                    dataSelecionada === "" ||
+                    transacao.data ===
+                    dataSelecionada;
+
+
+                return (
+                    correspondeDescricao &&
+                    correspondeTipo &&
+                    correspondeData
+                );
+
+            }
+        );
+
+
+    // Nenhuma movimentação
+
+    if (filtradas.length === 0) {
+
+        listaTransacoes.innerHTML = `
 
             <tr>
 
-                <td>${transacao.data}</td>
+                <td
+                    colspan="5"
+                    class="empty-state"
+                >
 
-                <td>${transacao.descricao}</td>
-
-                <td>${transacao.tipo}</td>
-
-                <td>R$ ${transacao.valor.toFixed(2)}</td>
-
-                <td>
-
-                    <button 
-                        class="btn-editar"
-                        onclick="editarTransacao(${index})">
-                        Editar
-                    </button>
-
-
-                    <button 
-                        class="btn-excluir"
-                        onclick="excluirTransacao(${index})">
-                        Excluir
-                    </button>
+                    Nenhuma movimentação encontrada.
 
                 </td>
 
@@ -158,93 +378,319 @@ function atualizarTabela() {
 
         `;
 
+    }
 
-    });
+
+    // Mostrar movimentações
+
+    else {
+
+        filtradas.forEach(
+            function (transacao) {
+
+                const index =
+                    transacoes.indexOf(
+                        transacao
+                    );
+
+
+                const ehReceita =
+                    transacao.tipo ===
+                    "receita";
+
+
+                listaTransacoes.innerHTML += `
+
+                    <tr>
+
+                        <td>
+                            ${formatarData(
+                                transacao.data
+                            )}
+                        </td>
+
+
+                        <td>
+
+                            <strong>
+                                ${transacao.descricao}
+                            </strong>
+
+                        </td>
+
+
+                        <td>
+
+                            <span
+                                class="
+                                tipo-badge
+                                ${
+                                    ehReceita
+                                        ? "tipo-receita"
+                                        : "tipo-despesa"
+                                }
+                                "
+                            >
+
+                                ${
+                                    ehReceita
+                                        ? "↑ Receita"
+                                        : "↓ Despesa"
+                                }
+
+                            </span>
+
+                        </td>
+
+
+                        <td
+                            class="
+                            ${
+                                ehReceita
+                                    ? "valor-receita"
+                                    : "valor-despesa"
+                            }
+                            "
+                        >
+
+                            ${formatarMoeda(
+                                transacao.valor
+                            )}
+
+                        </td>
+
+
+                        <td>
+
+                            <div class="acoes">
+
+
+                                <button
+                                    class="btn-editar"
+                                    title="Editar"
+                                    onclick="
+                                        editarTransacao(
+                                            ${index}
+                                        )
+                                    "
+                                >
+
+                                    ${iconeEditar}
+
+                                </button>
+
+
+                                <button
+                                    class="btn-excluir"
+                                    title="Excluir"
+                                    onclick="
+                                        excluirTransacao(
+                                            ${index}
+                                        )
+                                    "
+                                >
+
+                                    ${iconeExcluir}
+
+                                </button>
+
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                `;
+
+            }
+        );
+
+    }
+
+
+    // Contador
+
+    if (filtradas.length === 0) {
+
+        contadorRegistros.textContent =
+            "Nenhuma movimentação encontrada";
+
+    }
+
+    else {
+
+        contadorRegistros.textContent =
+
+            `Mostrando ${filtradas.length}
+            de ${transacoes.length}
+            movimentação${
+                transacoes.length === 1
+                    ? ""
+                    : "ões"
+            }`;
+
+    }
 
 }
 
 
-
-// Atualizar cards
+// ================================
+// ATUALIZAR RESUMO
+// ================================
 
 function atualizarResumo() {
 
     let receitas = 0;
+
     let despesas = 0;
 
 
-    transacoes.forEach(function(transacao) {
+    transacoes.forEach(
+        function (transacao) {
 
+            if (
+                transacao.tipo ===
+                "receita"
+            ) {
 
-        if (transacao.tipo === "receita") {
+                receitas +=
+                    Number(
+                        transacao.valor
+                    );
 
-            receitas += transacao.valor;
+            }
 
-        } else {
+            else {
 
-            despesas += transacao.valor;
+                despesas +=
+                    Number(
+                        transacao.valor
+                    );
+
+            }
 
         }
+    );
 
 
-    });
+    const saldo =
+        receitas - despesas;
 
 
-    const saldo = receitas - despesas;
+    // Cards
+
+    cardReceitas.textContent =
+        formatarMoeda(
+            receitas
+        );
 
 
-    cardReceitas.textContent = `R$ ${receitas.toFixed(2)}`;
+    cardDespesas.textContent =
+        formatarMoeda(
+            despesas
+        );
 
-    cardDespesas.textContent = `R$ ${despesas.toFixed(2)}`;
 
-    cardSaldo.textContent = `R$ ${saldo.toFixed(2)}`;
+    cardSaldo.textContent =
+        formatarMoeda(
+            saldo
+        );
+
+
+    // Resumo
+
+    resumoReceitas.textContent =
+        formatarMoeda(
+            receitas
+        );
+
+
+    resumoDespesas.textContent =
+        formatarMoeda(
+            despesas
+        );
+
+
+    resumoSaldo.textContent =
+        formatarMoeda(
+            saldo
+        );
 
 }
 
 
-
-// Carregar dados ao abrir página
-
-atualizarTabela();
-
-atualizarResumo();
-
-criarGrafico();
-
-
-
-
-// Editar transação
+// ================================
+// EDITAR TRANSAÇÃO
+// ================================
 
 function editarTransacao(index) {
 
-
-    const transacao = transacoes[index];
-
-
-    indiceEdicao = index;
+    const transacao =
+        transacoes[index];
 
 
-    document.getElementById("descricao").value = transacao.descricao;
+    indiceEdicao =
+        index;
 
-    document.getElementById("valor").value = transacao.valor;
 
-    document.getElementById("data").value = transacao.data;
+    document.getElementById(
+        "descricao"
+    ).value =
+        transacao.descricao;
 
-    document.getElementById("tipo").value = transacao.tipo;
 
+    document.getElementById(
+        "valor"
+    ).value =
+        transacao.valor;
+
+
+    document.getElementById(
+        "data"
+    ).value =
+        transacao.data;
+
+
+    document.getElementById(
+        "tipo"
+    ).value =
+        transacao.tipo;
+
+
+    // Alterar texto do botão
+
+    botaoSubmit.querySelector(
+        "span"
+    ).textContent =
+        "Salvar alteração";
+
+
+    // Rolar até o formulário
+
+    document
+        .getElementById("formulario")
+        .scrollIntoView({
+
+            behavior: "smooth",
+
+            block: "center"
+
+        });
 
 }
 
 
-
-
-// Excluir transação
+// ================================
+// EXCLUIR TRANSAÇÃO
+// ================================
 
 function excluirTransacao(index) {
 
-
-    const confirmar = confirm("Deseja realmente excluir esta movimentação?");
+    const confirmar =
+        confirm(
+            "Deseja realmente excluir esta movimentação?"
+        );
 
 
     if (!confirmar) {
@@ -254,10 +700,15 @@ function excluirTransacao(index) {
     }
 
 
-    transacoes.splice(index, 1);
+    transacoes.splice(
+        index,
+        1
+    );
 
 
-    salvarTransacoes(transacoes);
+    salvarTransacoes(
+        transacoes
+    );
 
 
     atualizarTabela();
@@ -266,5 +717,15 @@ function excluirTransacao(index) {
 
     criarGrafico();
 
-
 }
+
+
+// ================================
+// INICIALIZAÇÃO
+// ================================
+
+atualizarTabela();
+
+atualizarResumo();
+
+criarGrafico();

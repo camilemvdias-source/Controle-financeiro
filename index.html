@@ -2,283 +2,859 @@
 <html lang="pt-BR">
 
 <head>
-
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>Controle Financeiro</title>
 
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/responsive.css">
+    <!-- Fonte -->
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
 
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- CSS -->
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="css/responsive.css"
+    >
 </head>
-
 
 <body>
 
+    <!-- =========================
+         CABEÇALHO
+    ========================== -->
 
-<header class="header">
+    <header class="header">
 
-    <div class="container">
+        <div class="container header-content">
 
-        <h1>Controle Financeiro</h1>
+            <div class="brand">
+
+                <div class="brand-icon">
+
+                    <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                    >
+
+                        <path
+                            d="M4 19V10M10 19V5M16 19v-7M22 19V3"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                        />
+
+                        <path
+                            d="m3 7 5-3 5 3 7-5"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        />
+
+                    </svg>
+
+                </div>
+
+                <div>
+
+                    <h1>
+                        Controle Financeiro
+                    </h1>
+
+                    <p>
+                        Gerencie suas receitas, despesas e acompanhe seu saldo.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <main>
+
+        <!-- =========================
+             CARDS
+        ========================== -->
+
+        <section
+            id="cards"
+            class="container"
+        >
+
+            <!-- RECEITAS -->
+
+            <div class="card receita">
+
+                <div class="card-top">
+
+                    <div class="card-icon receita-icon">
+
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                        >
+
+                            <path
+                                d="M4 17 10 11l4 4 6-8"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            />
+
+                            <path
+                                d="M16 7h4v4"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            />
+
+                        </svg>
+
+                    </div>
+
+                    <span class="card-label">
+                        Receitas
+                    </span>
+
+                </div>
+
+                <strong id="receitas">
+                    R$ 0,00
+                </strong>
+
+                <small>
+                    Entradas registradas
+                </small>
+
+            </div>
+
+
+            <!-- DESPESAS -->
+
+            <div class="card despesa">
+
+                <div class="card-top">
+
+                    <div class="card-icon despesa-icon">
+
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                        >
+
+                            <path
+                                d="m4 7 6 6 4-4 6 8"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            />
+
+                            <path
+                                d="M16 17h4v-4"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            />
+
+                        </svg>
+
+                    </div>
+
+                    <span class="card-label">
+                        Despesas
+                    </span>
+
+                </div>
+
+                <strong id="despesas">
+                    R$ 0,00
+                </strong>
+
+                <small>
+                    Saídas registradas
+                </small>
+
+            </div>
+
+
+            <!-- SALDO -->
+
+            <div class="card saldo">
+
+                <div class="card-top">
+
+                    <div class="card-icon saldo-icon">
+
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                        >
+
+                            <rect
+                                x="3"
+                                y="6"
+                                width="18"
+                                height="14"
+                                rx="2"
+                                stroke="currentColor"
+                                stroke-width="2"
+                            />
+
+                            <path
+                                d="M3 10h18M16 15h2"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                            />
+
+                        </svg>
+
+                    </div>
+
+                    <span class="card-label">
+                        Saldo
+                    </span>
+
+                </div>
+
+                <strong id="saldo">
+                    R$ 0,00
+                </strong>
+
+                <small>
+                    Saldo disponível
+                </small>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             NOVA MOVIMENTAÇÃO
+        ========================== -->
+
+        <section
+            id="formulario"
+            class="container section-card"
+        >
+
+            <div class="section-heading">
+
+                <div class="heading-icon">
+
+                    <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                    >
+
+                        <path
+                            d="M12 5v14M5 12h14"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                        />
+
+                    </svg>
+
+                </div>
+
+                <div>
+
+                    <h2>
+                        Nova movimentação
+                    </h2>
+
+                    <p>
+                        Adicione uma receita ou despesa ao seu controle.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <form id="form-financeiro">
+
+                <!-- DESCRIÇÃO -->
+
+                <div class="field">
+
+                    <label for="descricao">
+                        Descrição
+                    </label>
+
+                    <input
+                        type="text"
+                        id="descricao"
+                        placeholder="Ex.: Salário, Mercado..."
+                        required
+                    >
+
+                </div>
+
+
+                <!-- VALOR -->
+
+                <div class="field">
+
+                    <label for="valor">
+                        Valor
+                    </label>
+
+                    <input
+                        type="number"
+                        id="valor"
+                        placeholder="0,00"
+                        step="0.01"
+                        min="0"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- DATA -->
+
+                <div class="field">
+
+                    <label for="data">
+                        Data
+                    </label>
+
+                    <input
+                        type="date"
+                        id="data"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- TIPO -->
+
+                <div class="field">
+
+                    <label for="tipo">
+                        Tipo
+                    </label>
+
+                    <select id="tipo">
+
+                        <option value="receita">
+                            Receita
+                        </option>
+
+                        <option value="despesa">
+                            Despesa
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- BOTÃO -->
+
+                <button
+                    type="submit"
+                    class="btn-primary"
+                    id="btn-submit"
+                >
+
+                    <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                    >
+
+                        <path
+                            d="M12 5v14M5 12h14"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                        />
+
+                    </svg>
+
+                    <span>
+                        Adicionar movimentação
+                    </span>
+
+                </button>
+
+            </form>
+
+        </section>
+
+
+        <!-- =========================
+             PESQUISA
+        ========================== -->
+
+        <section
+            id="pesquisa"
+            class="container section-card"
+        >
+
+            <div class="section-heading compact">
+
+                <div class="heading-icon">
+
+                    <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                    >
+
+                        <circle
+                            cx="11"
+                            cy="11"
+                            r="7"
+                            stroke="currentColor"
+                            stroke-width="2"
+                        />
+
+                        <path
+                            d="m20 20-4-4"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                        />
+
+                    </svg>
+
+                </div>
+
+                <div>
+
+                    <h2>
+                        Pesquisar movimentação
+                    </h2>
+
+                    <p>
+                        Use os filtros para encontrar um lançamento rapidamente.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="filters">
+
+                <!-- PESQUISA POR DESCRIÇÃO -->
+
+                <div class="field search-field">
+
+                    <label for="pesquisa-descricao">
+                        Descrição
+                    </label>
+
+                    <div class="input-icon">
+
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                        >
+
+                            <circle
+                                cx="11"
+                                cy="11"
+                                r="7"
+                                stroke="currentColor"
+                                stroke-width="2"
+                            />
+
+                            <path
+                                d="m20 20-4-4"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                            />
+
+                        </svg>
+
+                        <input
+                            type="text"
+                            id="pesquisa-descricao"
+                            placeholder="Digite uma descrição..."
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- FILTRO TIPO -->
+
+                <div class="field">
+
+                    <label for="filtro-tipo">
+                        Tipo
+                    </label>
+
+                    <select id="filtro-tipo">
+
+                        <option value="todos">
+                            Todas
+                        </option>
+
+                        <option value="receita">
+                            Receitas
+                        </option>
+
+                        <option value="despesa">
+                            Despesas
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- FILTRO DATA -->
+
+                <div class="field">
+
+                    <label for="filtro-data">
+                        Data
+                    </label>
+
+                    <input
+                        type="date"
+                        id="filtro-data"
+                    >
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             MOVIMENTAÇÕES
+        ========================== -->
+
+        <section
+            id="tabela"
+            class="container section-card"
+        >
+
+            <div class="section-heading compact">
+
+                <div class="heading-icon">
+
+                    <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                    >
+
+                        <rect
+                            x="4"
+                            y="4"
+                            width="16"
+                            height="16"
+                            rx="2"
+                            stroke="currentColor"
+                            stroke-width="2"
+                        />
+
+                        <path
+                            d="M8 8h8M8 12h8M8 16h5"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                        />
+
+                    </svg>
+
+                </div>
+
+                <div>
+
+                    <h2>
+                        Movimentações
+                    </h2>
+
+                    <p>
+                        Confira todos os seus lançamentos.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Data
+                            </th>
+
+                            <th>
+                                Descrição
+                            </th>
+
+                            <th>
+                                Tipo
+                            </th>
+
+                            <th>
+                                Valor
+                            </th>
+
+                            <th>
+                                Ações
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="lista-transacoes">
+
+                        <!--
+                            As movimentações serão
+                            adicionadas pelo JavaScript.
+                        -->
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <div class="table-footer">
+
+                <span id="contador-registros">
+                    Nenhuma movimentação registrada
+                </span>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             RESUMO FINANCEIRO
+        ========================== -->
+
+        <section
+            id="grafico"
+            class="container section-card"
+        >
+
+            <div class="section-heading compact">
+
+                <div class="heading-icon">
+
+                    <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                    >
+
+                        <path
+                            d="M4 19V5M4 19h16"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                        />
+
+                        <path
+                            d="m7 15 3-4 3 2 5-7"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        />
+
+                    </svg>
+
+                </div>
+
+                <div>
+
+                    <h2>
+                        Resumo financeiro
+                    </h2>
+
+                    <p>
+                        Visualize a distribuição entre receitas e despesas.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="chart-area">
+
+                <!-- GRÁFICO -->
+
+                <div class="chart-box">
+
+                    <canvas
+                        id="graficoFinanceiro"
+                    ></canvas>
+
+                </div>
+
+
+                <!-- INFORMAÇÕES -->
+
+                <div class="chart-info">
+
+                    <!-- RECEITAS -->
+
+                    <div class="info-item">
+
+                        <span class="dot green"></span>
+
+                        <div>
+
+                            <small>
+                                Total de receitas
+                            </small>
+
+                            <strong id="resumo-receitas">
+                                R$ 0,00
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- DESPESAS -->
+
+                    <div class="info-item">
+
+                        <span class="dot red"></span>
+
+                        <div>
+
+                            <small>
+                                Total de despesas
+                            </small>
+
+                            <strong id="resumo-despesas">
+                                R$ 0,00
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- SALDO -->
+
+                    <div class="info-item">
+
+                        <span class="dot blue"></span>
+
+                        <div>
+
+                            <small>
+                                Saldo atual
+                            </small>
+
+                            <strong id="resumo-saldo">
+                                R$ 0,00
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =========================
+         RODAPÉ
+    ========================== -->
+
+    <footer class="footer">
 
         <p>
-            Sistema para gerenciamento de receitas e despesas,
-            permitindo acompanhar entradas, saídas e saldo
-            de forma simples.
+            Controle Financeiro • 2026
         </p>
 
-    </div>
+        <span>
+            Projeto desenvolvido por Camile Dias
+        </span>
 
-</header>
+    </footer>
 
 
+    <!-- =========================
+         JAVASCRIPT
+    ========================== -->
 
-<main>
+    <!-- Chart.js -->
 
+    <script
+        src="https://cdn.jsdelivr.net/npm/chart.js"
+    ></script>
 
-    <!-- Cards -->
 
-    <section id="cards" class="container">
+    <!-- Armazenamento -->
 
-
-        <div class="card receita">
-
-            <h3>💵 Receitas</h3>
-
-            <span id="receitas">R$ 0,00</span>
-
-        </div>
-
-
-        <div class="card despesa">
-
-            <h3>💸 Despesas</h3>
-
-            <span id="despesas">R$ 0,00</span>
-
-        </div>
-
-
-        <div class="card saldo">
-
-            <h3>💰 Saldo</h3>
-
-            <span id="saldo">R$ 0,00</span>
-
-        </div>
-
-
-    </section>
-
-
-
-
-    <!-- Formulário -->
-
-
-    <section id="formulario" class="container">
-
-
-        <h2>Nova Movimentação</h2>
-
-
-        <form id="form-financeiro">
-
-
-            <input
-                type="text"
-                id="descricao"
-                placeholder="Descrição"
-                required
-            >
-
-
-            <input
-                type="number"
-                id="valor"
-                placeholder="Valor"
-                step="0.01"
-                required
-            >
-
-
-            <input
-                type="date"
-                id="data"
-                required
-            >
-
-
-            <select id="tipo">
-
-                <option value="receita">
-                    Receita
-                </option>
-
-                <option value="despesa">
-                    Despesa
-                </option>
-
-            </select>
-
-
-            <button type="submit">
-                Adicionar
-            </button>
-
-
-        </form>
-
-
-    </section>
-
-
-
-
-    <!-- Pesquisa -->
-
-
-    <section id="pesquisa" class="container">
-
-
-        <h2>Pesquisar Movimentação</h2>
-
-
-        <input
-            type="text"
-            id="pesquisa-descricao"
-            placeholder="Digite uma descrição..."
-        >
-
-
-        <select id="filtro-tipo">
-
-
-            <option value="todos">
-                Todas
-            </option>
-
-
-            <option value="receita">
-                Receitas
-            </option>
-
-
-            <option value="despesa">
-                Despesas
-            </option>
-
-
-        </select>
-
-
-
-        <label for="filtro-data">
-            Filtrar por data:
-        </label>
-
-
-        <input 
-            type="date" 
-            id="filtro-data"
-        >
-
-
-    </section>
-
-
-
-
-
-    <!-- Tabela -->
-
-
-    <section id="tabela" class="container">
-
-
-        <h2>Movimentações</h2>
-
-
-        <table>
-
-
-            <thead>
-
-
-                <tr>
-
-                    <th>Data</th>
-
-                    <th>Descrição</th>
-
-                    <th>Tipo</th>
-
-                    <th>Valor</th>
-
-                    <th>Ações</th>
-
-                </tr>
-
-
-            </thead>
-
-
-
-            <tbody id="lista-transacoes">
-
-
-            </tbody>
-
-
-
-        </table>
-
-
-    </section>
-
-
-
+    <script src="js/storage.js"></script>
 
 
     <!-- Gráfico -->
 
-
-    <section id="grafico" class="container">
-
-
-        <h2>Resumo Financeiro</h2>
+    <script src="js/chart.js"></script>
 
 
-        <canvas id="graficoFinanceiro"></canvas>
+    <!-- Funcionalidades -->
 
-
-    </section>
-
-
-
-</main>
-
-
-
-
-
-<!-- Scripts -->
-
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-
-<script src="js/storage.js"></script>
-
-<script src="js/finance.js"></script>
-
-<script src="js/chart.js"></script>
-
-<script src="js/script.js"></script>
-
-
+    <script src="js/script.js"></script>
 
 </body>
 

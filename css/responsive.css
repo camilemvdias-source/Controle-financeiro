@@ -1,249 +1,266 @@
 /* =========================
-   Responsividade
+   RESPONSIVIDADE
 ========================= */
 
 
-/* Tablets */
+/* =========================
+   TABLET
+========================= */
 
-@media (max-width: 900px){
+@media (max-width: 980px) {
 
-
-    .container{
-
-        width:92%;
-
+    .container {
+        width: 92%;
     }
-
-
-
-    /* Header */
-
-    .header{
-
-        padding:50px 0;
-
-    }
-
-
-    .header h1{
-
-        font-size:34px;
-
-    }
-
-
-    .header p{
-
-        font-size:16px;
-
-    }
-
-
 
 
     /* Cards */
 
-    #cards{
-
-        grid-template-columns:1fr;
-
-        margin-top:30px;
-
+    #cards {
+        grid-template-columns: repeat(2, 1fr);
     }
-
-
-    .card{
-
-        padding:25px;
-
-    }
-
-
-
 
 
     /* Formulário */
 
-    #form-financeiro{
+    #form-financeiro {
+        grid-template-columns: repeat(2, 1fr);
+    }
 
-        grid-template-columns:1fr;
-
+    #form-financeiro .btn-primary {
+        width: 100%;
     }
 
 
-    #form-financeiro input,
-    #form-financeiro select,
-    #form-financeiro button{
+    /* Filtros */
 
-        width:100%;
-
-        height:45px;
-
+    .filters {
+        grid-template-columns: 1fr 1fr;
     }
 
-
-
-
-
-    /* Pesquisa */
-
-    #pesquisa input,
-    #pesquisa select{
-
-        width:100%;
-
-        margin-bottom:15px;
-
+    .search-field {
+        grid-column: 1 / -1;
     }
-
-
-
-
-
-    /* Tabela */
-
-    #tabela{
-
-        padding:20px;
-
-        overflow-x:auto;
-
-    }
-
-
-    table{
-
-        min-width:700px;
-
-    }
-
-
 
 
     /* Gráfico */
 
-    #grafico{
-
-        padding:20px;
-
+    .chart-area {
+        grid-template-columns: 1fr;
     }
 
-
-    #graficoFinanceiro{
-
-        width:100% !important;
-
-        height:auto !important;
-
+    .chart-box {
+        margin: 0 auto;
     }
 
+    .chart-info {
+        width: 100%;
+    }
 
 }
 
 
+/* =========================
+   CELULAR
+========================= */
 
+@media (max-width: 650px) {
 
-
-/* Celulares */
-
-@media (max-width:600px){
-
-
-    .container{
-
-        width:94%;
-
+    .container {
+        width: 94%;
     }
 
 
+    /* =========================
+       HEADER
+    ========================== */
 
-    /* Header */
+    .header {
+        padding: 22px 0 65px;
+    }
 
-    .header h1{
+    .brand {
+        align-items: flex-start;
+        gap: 12px;
+    }
 
-        font-size:28px;
+    .brand-icon {
+        width: 45px;
+        height: 45px;
+        flex: 0 0 45px;
+    }
 
+    .brand-icon svg {
+        width: 23px;
+        height: 23px;
+    }
+
+    .header h1 {
+        font-size: 25px;
+        letter-spacing: -0.4px;
+    }
+
+    .header p {
+        font-size: 12px;
+        line-height: 1.5;
     }
 
 
-    .header p{
+    /* =========================
+       CARDS
+    ========================== */
 
-        font-size:14px;
+    #cards {
+        grid-template-columns: 1fr;
 
+        gap: 14px;
+
+        margin-top: -35px;
+
+        margin-bottom: 20px;
+    }
+
+    .card {
+        padding: 20px;
+    }
+
+    .card-top {
+        margin-bottom: 14px;
+    }
+
+    .card strong {
+        font-size: 27px;
     }
 
 
+    /* =========================
+       SEÇÕES
+    ========================== */
 
+    .section-card {
+        padding: 20px;
 
-    /* Cards */
+        border-radius: 15px;
 
-    .card span{
+        margin-bottom: 18px;
+    }
 
-        font-size:26px;
+    .section-heading {
+        gap: 10px;
 
+        margin-bottom: 20px;
+    }
+
+    .heading-icon {
+        width: 37px;
+        height: 37px;
+
+        flex: 0 0 37px;
+    }
+
+    .heading-icon svg {
+        width: 19px;
+        height: 19px;
+    }
+
+    .section-heading h2 {
+        font-size: 18px;
+    }
+
+    .section-heading p {
+        font-size: 12px;
     }
 
 
+    /* =========================
+       FORMULÁRIO
+    ========================== */
 
+    #form-financeiro {
+        grid-template-columns: 1fr;
 
-    /* Formulário */
+        gap: 13px;
+    }
 
-    #formulario,
-    #pesquisa,
-    #tabela,
-    #grafico{
+    #form-financeiro .btn-primary {
+        width: 100%;
 
-        padding:20px;
-
-        border-radius:15px;
-
+        margin-top: 4px;
     }
 
 
+    /* =========================
+       FILTROS
+    ========================== */
 
-    #formulario h2,
-    #tabela h2,
-    #grafico h2{
+    .filters {
+        grid-template-columns: 1fr;
 
-        font-size:20px;
+        gap: 13px;
+    }
 
+    .search-field {
+        grid-column: auto;
     }
 
 
+    /* =========================
+       TABELA
+    ========================== */
 
+    .table-wrapper {
+        overflow-x: auto;
 
-    /* Botões */
-
-    button{
-
-        width:100%;
-
+        margin: 0 -3px;
     }
 
-
-
-
-    /* Tabela */
+    table {
+        min-width: 680px;
+    }
 
     th,
-    td{
+    td {
+        padding: 13px 12px;
 
-        padding:12px;
-
-        font-size:14px;
-
+        font-size: 12px;
     }
 
 
+    /* =========================
+       GRÁFICO
+    ========================== */
 
+    .chart-area {
+        grid-template-columns: 1fr;
 
-    /* Gráfico */
+        min-height: auto;
 
-    #graficoFinanceiro{
-
-        max-width:100%;
-
+        gap: 20px;
     }
 
+    .chart-box {
+        width: 100%;
+
+        height: 260px;
+    }
+
+    .chart-info {
+        gap: 10px;
+    }
+
+    .info-item {
+        padding: 14px;
+    }
+
+
+    /* =========================
+       FOOTER
+    ========================== */
+
+    .footer {
+        padding: 25px 15px 30px;
+
+        font-size: 11px;
+    }
 
 }
