@@ -579,67 +579,88 @@ td {
     font-weight: 700;
 }
 
-/* =========================
-   BOTÕES DA TABELA
-========================= */
+/* ==========================================
+   BOTÕES DE AÇÕES DA TABELA
+========================================== */
 
 .acoes {
-
     display: flex;
-
-    gap: 7px;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
+
+
+/* Botão Editar */
 
 .btn-editar,
 .btn-excluir {
-
-    width: 34px;
-    height: 34px;
-
-    padding: 0;
-
-    display: inline-grid;
-
-    place-items: center;
-
-    border-radius: 9px;
-
-    background: white;
-
+    border: none;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 13px;
+    font-weight: 600;
     cursor: pointer;
-
-    transition: 0.2s;
+    transition: all 0.2s ease;
 }
+
+
+/* Editar */
 
 .btn-editar {
-
-    color: var(--primary);
-
-    border: 1px solid #bfdbfe;
+    background: #f3e8ff;
+    color: #7c3aed;
 }
 
-.btn-excluir {
-
-    color: var(--red);
-
-    border: 1px solid #fecaca;
-}
 
 .btn-editar:hover {
-
-    background: var(--primary-soft);
+    background: #7c3aed;
+    color: white;
+    transform: translateY(-1px);
 }
+
+
+/* Excluir */
+
+.btn-excluir {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
 
 .btn-excluir:hover {
-
-    background: var(--red-soft);
+    background: #dc2626;
+    color: white;
+    transform: translateY(-1px);
 }
 
-.btn-editar svg,
-.btn-excluir svg {
 
-    width: 16px;
-    height: 16px;
+/* Clique */
+
+.btn-editar:active,
+.btn-excluir:active {
+    transform: scale(0.96);
+}
+
+
+/* ==========================================
+   RESPONSIVO
+========================================== */
+
+@media (max-width: 600px) {
+
+    .acoes {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .btn-editar,
+    .btn-excluir {
+        width: 100%;
+        padding: 7px 10px;
+        font-size: 12px;
+    }
+
 }
 
 /* =========================

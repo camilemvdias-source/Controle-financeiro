@@ -1,35 +1,40 @@
 // ======================================================
 // CONTROLE FINANCEIRO
-// Projeto desenvolvido com foco em JavaScript
+// Projeto com foco em JavaScript
 // ======================================================
 
 
 // ======================================================
-// 1. CONFIGURAÇÕES
+// 1. DADOS DA APLICAÇÃO
 // ======================================================
 
-const CHAVE_STORAGE = "transacoes";
+// O storage.js já possui:
+// carregarTransacoes()
+// salvarTransacoes()
 
-let transacoes = carregarDados();
+let transacoes = carregarTransacoes();
 
 let idEmEdicao = null;
 
-let grafico = null;
-
 
 // ======================================================
-// 2. SELEÇÃO DOS ELEMENTOS DO HTML
+// 2. ELEMENTOS DO HTML
 // ======================================================
 
-const formulario = document.getElementById("form-financeiro");
+const formulario =
+    document.getElementById("form-financeiro");
 
-const descricaoInput = document.getElementById("descricao");
+const descricaoInput =
+    document.getElementById("descricao");
 
-const valorInput = document.getElementById("valor");
+const valorInput =
+    document.getElementById("valor");
 
-const dataInput = document.getElementById("data");
+const dataInput =
+    document.getElementById("data");
 
-const tipoInput = document.getElementById("tipo");
+const tipoInput =
+    document.getElementById("tipo");
 
 const listaTransacoes =
     document.getElementById("lista-transacoes");
@@ -72,82 +77,37 @@ const botaoSubmit =
 // 3. EVENTOS
 // ======================================================
 
-formulario?.addEventListener(
+formulario.addEventListener(
     "submit",
     adicionarTransacao
 );
 
-pesquisaInput?.addEventListener(
+pesquisaInput.addEventListener(
     "input",
     atualizarTabela
 );
 
-filtroTipo?.addEventListener(
+filtroTipo.addEventListener(
     "change",
     atualizarTabela
 );
 
-filtroData?.addEventListener(
+filtroData.addEventListener(
     "change",
     atualizarTabela
 );
 
 
 // ======================================================
-// 4. LOCAL STORAGE
-// ======================================================
-
-function carregarDados() {
-
-    const dados =
-        localStorage.getItem(
-            CHAVE_STORAGE
-        );
-
-    if (!dados) {
-
-        return [];
-
-    }
-
-    try {
-
-        return JSON.parse(dados);
-
-    }
-
-    catch (erro) {
-
-        console.error(
-            "Erro ao carregar dados:",
-            erro
-        );
-
-        return [];
-
-    }
-
-}
-
-
-function salvarDados() {
-
-    localStorage.setItem(
-        CHAVE_STORAGE,
-        JSON.stringify(transacoes)
-    );
-
-}
-
-
-// ======================================================
-// 5. ADICIONAR TRANSAÇÃO
+// 4. ADICIONAR / EDITAR TRANSAÇÃO
 // ======================================================
 
 function adicionarTransacao(event) {
 
     event.preventDefault();
 
+
+    // Captura os valores do formulário
 
     const descricao =
         descricaoInput.value.trim();
@@ -162,11 +122,11 @@ function adicionarTransacao(event) {
         tipoInput.value;
 
 
-    // ------------------------------------------
+    // ==================================================
     // VALIDAÇÃO
-    // ------------------------------------------
+    // ==================================================
 
-    if (!descricao) {
+    if (descricao === "") {
 
         mostrarMensagem(
             "Digite uma descrição."
@@ -175,11 +135,10 @@ function adicionarTransacao(event) {
         descricaoInput.focus();
 
         return;
-
     }
 
 
-    if (!valor || valor <= 0) {
+    if (isNaN(valor) || valor <= 0) {
 
         mostrarMensagem(
             "Digite um valor válido."
@@ -188,11 +147,10 @@ function adicionarTransacao(event) {
         valorInput.focus();
 
         return;
-
     }
 
 
-    if (!data) {
+    if (data === "") {
 
         mostrarMensagem(
             "Selecione uma data."
@@ -201,17 +159,19 @@ function adicionarTransacao(event) {
         dataInput.focus();
 
         return;
-
     }
 
 
-    // ------------------------------------------
-    // CRIAÇÃO DO OBJETO
-    // ------------------------------------------
+    // ==================================================
+    // CRIA O OBJETO
+    // ==================================================
 
     const novaTransacao = {
 
-        id: idEmEdicao || Date.now(),
+        id:
+            idEmEdicao !== null
+                ? idEmEdicao
+                : Date.now(),
 
         descricao: descricao,
 
@@ -224,15 +184,15 @@ function adicionarTransacao(event) {
     };
 
 
-    // ------------------------------------------
-    // VERIFICA SE É EDIÇÃO
-    // ------------------------------------------
+    // ==================================================
+    // EDIÇÃO
+    // ==================================================
 
-    if (idEmEdicao) {
+    if (idEmEdicao !== null) {
 
         transacoes =
             transacoes.map(
-                transacao => {
+                function (transacao) {
 
                     if (
                         transacao.id ===
@@ -255,6 +215,10 @@ function adicionarTransacao(event) {
 
     }
 
+    // ==================================================
+    // NOVA TRANSAÇÃO
+    // ==================================================
+
     else {
 
         transacoes.push(
@@ -269,35 +233,33 @@ function adicionarTransacao(event) {
     }
 
 
-    // ------------------------------------------
-    // SALVAR
-    // ------------------------------------------
+    // ==================================================
+    // SALVAR NO LOCALSTORAGE
+    // ==================================================
 
-    salvarDados();
+    salvarTransacoes(
+        transacoes
+    );
 
 
-    // ------------------------------------------
-    // RESETAR MODO DE EDIÇÃO
-    // ------------------------------------------
+    // Sai do modo edição
 
     idEmEdicao = null;
 
 
+    // Volta o botão ao normal
+
     alterarBotao(
-        "Adicionar"
+        "Adicionar movimentação"
     );
 
 
-    // ------------------------------------------
-    // LIMPAR FORMULÁRIO
-    // ------------------------------------------
+    // Limpa o formulário
 
     formulario.reset();
 
 
-    // ------------------------------------------
-    // ATUALIZAR A APLICAÇÃO
-    // ------------------------------------------
+    // Atualiza tudo
 
     atualizarAplicacao();
 
@@ -305,27 +267,27 @@ function adicionarTransacao(event) {
 
 
 // ======================================================
-// 6. FILTRAR TRANSAÇÕES
+// 5. FILTRAR TRANSAÇÕES
 // ======================================================
 
 function obterTransacoesFiltradas() {
 
     const pesquisa =
-        pesquisaInput?.value
+        pesquisaInput.value
             .toLowerCase()
-            .trim() || "";
+            .trim();
 
 
     const tipoSelecionado =
-        filtroTipo?.value || "todos";
+        filtroTipo.value;
 
 
     const dataSelecionada =
-        filtroData?.value || "";
+        filtroData.value;
 
 
     return transacoes.filter(
-        transacao => {
+        function (transacao) {
 
             // Pesquisa pela descrição
 
@@ -335,7 +297,7 @@ function obterTransacoesFiltradas() {
                     .includes(pesquisa);
 
 
-            // Filtro de receita/despesa
+            // Filtro por tipo
 
             const correspondeTipo =
                 tipoSelecionado === "todos" ||
@@ -343,10 +305,10 @@ function obterTransacoesFiltradas() {
                 tipoSelecionado;
 
 
-            // Filtro de data
+            // Filtro por data
 
             const correspondeData =
-                !dataSelecionada ||
+                dataSelecionada === "" ||
                 transacao.data ===
                 dataSelecionada;
 
@@ -364,36 +326,33 @@ function obterTransacoesFiltradas() {
 
 
 // ======================================================
-// 7. RENDERIZAR TABELA
+// 6. ATUALIZAR TABELA
 // ======================================================
 
 function atualizarTabela() {
 
-    if (!listaTransacoes) {
-
-        return;
-
-    }
-
-
     listaTransacoes.innerHTML = "";
 
 
-    const lista =
+    const transacoesFiltradas =
         obterTransacoesFiltradas();
 
 
-    // ------------------------------------------
+    // ==================================================
     // NENHUM RESULTADO
-    // ------------------------------------------
+    // ==================================================
 
-    if (lista.length === 0) {
+    if (
+        transacoesFiltradas.length === 0
+    ) {
 
         listaTransacoes.innerHTML = `
 
             <tr>
 
-                <td colspan="5">
+                <td
+                    colspan="5"
+                >
 
                     Nenhuma movimentação encontrada.
 
@@ -407,43 +366,64 @@ function atualizarTabela() {
         atualizarContador(0);
 
         return;
-
     }
 
 
-    // ------------------------------------------
+    // ==================================================
     // CRIAR LINHAS
-    // ------------------------------------------
+    // ==================================================
 
-    lista.forEach(
-        transacao => {
+    transacoesFiltradas.forEach(
+        function (transacao) {
 
             const linha =
                 document.createElement("tr");
 
 
-            const data =
+            // Data
+
+            const dataFormatada =
                 formatarData(
                     transacao.data
                 );
 
 
-            const valor =
+            // Valor
+
+            const valorFormatado =
                 formatarMoeda(
                     transacao.valor
                 );
 
 
-            const tipo =
+            // Tipo
+
+            const tipoTexto =
                 transacao.tipo === "receita"
                     ? "Receita"
                     : "Despesa";
 
 
+            const classeTipo =
+                transacao.tipo === "receita"
+                    ? "tipo-receita"
+                    : "tipo-despesa";
+
+
+            const classeValor =
+                transacao.tipo === "receita"
+                    ? "valor-receita"
+                    : "valor-despesa";
+
+
+            // ==================================================
+            // HTML DA LINHA
+            // ==================================================
+
             linha.innerHTML = `
 
                 <td>
-                    ${data}
+                    ${dataFormatada}
                 </td>
 
                 <td>
@@ -451,62 +431,68 @@ function atualizarTabela() {
                 </td>
 
                 <td>
-                    <span class="
-                        tipo-badge
-                        ${
-                            transacao.tipo === "receita"
-                                ? "tipo-receita"
-                                : "tipo-despesa"
-                        }
-                    ">
-                        ${tipo}
+
+                    <span
+                        class="tipo-badge ${classeTipo}"
+                    >
+
+                        ${tipoTexto}
+
                     </span>
+
                 </td>
 
-                <td class="
-                    ${
-                        transacao.tipo === "receita"
-                            ? "valor-receita"
-                            : "valor-despesa"
-                    }
-                ">
-                    ${valor}
+                <td
+                    class="${classeValor}"
+                >
+
+                    ${valorFormatado}
+
                 </td>
 
                 <td>
 
-                    <button
-                        class="btn-editar"
-                        data-id="${transacao.id}"
-                    >
-                        Editar
-                    </button>
+                    <div class="acoes">
 
-                    <button
-                        class="btn-excluir"
-                        data-id="${transacao.id}"
-                    >
-                        Excluir
-                    </button>
+                        <button
+                            type="button"
+                            class="btn-editar"
+                        >
+
+                            Editar
+
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="btn-excluir"
+                        >
+
+                            Excluir
+
+                        </button>
+
+                    </div>
 
                 </td>
 
             `;
 
 
-            // ----------------------------------
+            // ==================================================
             // BOTÃO EDITAR
-            // ----------------------------------
+            // ==================================================
 
-            const editar =
+            const botaoEditar =
                 linha.querySelector(
                     ".btn-editar"
                 );
 
 
-            editar.addEventListener(
+            botaoEditar.addEventListener(
                 "click",
-                () => {
+                function () {
 
                     editarTransacao(
                         transacao.id
@@ -516,19 +502,19 @@ function atualizarTabela() {
             );
 
 
-            // ----------------------------------
+            // ==================================================
             // BOTÃO EXCLUIR
-            // ----------------------------------
+            // ==================================================
 
-            const excluir =
+            const botaoExcluir =
                 linha.querySelector(
                     ".btn-excluir"
                 );
 
 
-            excluir.addEventListener(
+            botaoExcluir.addEventListener(
                 "click",
-                () => {
+                function () {
 
                     excluirTransacao(
                         transacao.id
@@ -537,6 +523,8 @@ function atualizarTabela() {
                 }
             );
 
+
+            // Adiciona a linha na tabela
 
             listaTransacoes.appendChild(
                 linha
@@ -547,21 +535,25 @@ function atualizarTabela() {
 
 
     atualizarContador(
-        lista.length
+        transacoesFiltradas.length
     );
 
 }
 
 
 // ======================================================
-// 8. EDITAR TRANSAÇÃO
+// 7. EDITAR TRANSAÇÃO
 // ======================================================
 
 function editarTransacao(id) {
 
     const transacao =
         transacoes.find(
-            item => item.id === id
+            function (item) {
+
+                return item.id === id;
+
+            }
         );
 
 
@@ -571,6 +563,8 @@ function editarTransacao(id) {
 
     }
 
+
+    // Preenche o formulário
 
     descricaoInput.value =
         transacao.descricao;
@@ -588,30 +582,40 @@ function editarTransacao(id) {
         transacao.tipo;
 
 
+    // Guarda o ID
+
     idEmEdicao = id;
 
+
+    // Altera o botão
 
     alterarBotao(
         "Salvar alteração"
     );
 
 
+    // Coloca o cursor na descrição
+
     descricaoInput.focus();
 
 
-    window.scrollTo({
+    // Volta para o formulário
 
-        top: 300,
+    document
+        .getElementById("formulario")
+        .scrollIntoView({
 
-        behavior: "smooth"
+            behavior: "smooth",
 
-    });
+            block: "center"
+
+        });
 
 }
 
 
 // ======================================================
-// 9. EXCLUIR TRANSAÇÃO
+// 8. EXCLUIR TRANSAÇÃO
 // ======================================================
 
 function excluirTransacao(id) {
@@ -629,20 +633,33 @@ function excluirTransacao(id) {
     }
 
 
+    // Remove a transação
+
     transacoes =
         transacoes.filter(
-            transacao =>
-                transacao.id !== id
+            function (transacao) {
+
+                return transacao.id !== id;
+
+            }
         );
 
 
-    salvarDados();
+    // Salva novamente
 
+    salvarTransacoes(
+        transacoes
+    );
+
+
+    // Mensagem
 
     mostrarMensagem(
         "Movimentação excluída!"
     );
 
+
+    // Atualiza a tela
 
     atualizarAplicacao();
 
@@ -650,26 +667,34 @@ function excluirTransacao(id) {
 
 
 // ======================================================
-// 10. CALCULAR RECEITAS
+// 9. CALCULAR RECEITAS
 // ======================================================
 
 function calcularReceitas() {
 
     return transacoes
         .filter(
-            transacao =>
-                transacao.tipo === "receita"
+            function (transacao) {
+
+                return (
+                    transacao.tipo ===
+                    "receita"
+                );
+
+            }
         )
         .reduce(
-            (
+            function (
                 total,
                 transacao
-            ) => {
+            ) {
 
-                return total +
+                return (
+                    total +
                     Number(
                         transacao.valor
-                    );
+                    )
+                );
 
             },
             0
@@ -679,26 +704,34 @@ function calcularReceitas() {
 
 
 // ======================================================
-// 11. CALCULAR DESPESAS
+// 10. CALCULAR DESPESAS
 // ======================================================
 
 function calcularDespesas() {
 
     return transacoes
         .filter(
-            transacao =>
-                transacao.tipo === "despesa"
+            function (transacao) {
+
+                return (
+                    transacao.tipo ===
+                    "despesa"
+                );
+
+            }
         )
         .reduce(
-            (
+            function (
                 total,
                 transacao
-            ) => {
+            ) {
 
-                return total +
+                return (
+                    total +
                     Number(
                         transacao.valor
-                    );
+                    )
+                );
 
             },
             0
@@ -708,7 +741,7 @@ function calcularDespesas() {
 
 
 // ======================================================
-// 12. CALCULAR SALDO
+// 11. CALCULAR SALDO
 // ======================================================
 
 function calcularSaldo() {
@@ -727,7 +760,7 @@ function calcularSaldo() {
 
 
 // ======================================================
-// 13. ATUALIZAR RESUMO
+// 12. ATUALIZAR RESUMO
 // ======================================================
 
 function atualizarResumo() {
@@ -741,86 +774,76 @@ function atualizarResumo() {
 
 
     const saldo =
-        receitas - despesas;
+        calcularSaldo();
 
 
-    // Cards principais
+    // ==================================================
+    // CARDS
+    // ==================================================
 
-    if (receitasElement) {
-
-        receitasElement.textContent =
-            formatarMoeda(receitas);
-
-    }
-
-
-    if (despesasElement) {
-
-        despesasElement.textContent =
-            formatarMoeda(despesas);
-
-    }
-
-
-    if (saldoElement) {
-
-        saldoElement.textContent =
-            formatarMoeda(saldo);
-
-    }
-
-
-    // Resumo
-
-    if (resumoReceitas) {
-
-        resumoReceitas.textContent =
-            formatarMoeda(receitas);
-
-    }
-
-
-    if (resumoDespesas) {
-
-        resumoDespesas.textContent =
-            formatarMoeda(despesas);
-
-    }
-
-
-    if (resumoSaldo) {
-
-        resumoSaldo.textContent =
-            formatarMoeda(saldo);
-
-    }
-
-
-    // Altera visual do saldo
-
-    if (saldoElement) {
-
-        saldoElement.classList.remove(
-            "saldo-positivo",
-            "saldo-negativo"
+    receitasElement.textContent =
+        formatarMoeda(
+            receitas
         );
 
 
-        if (saldo < 0) {
+    despesasElement.textContent =
+        formatarMoeda(
+            despesas
+        );
 
-            saldoElement.classList.add(
-                "saldo-negativo"
-            );
 
-        }
+    saldoElement.textContent =
+        formatarMoeda(
+            saldo
+        );
 
-        else {
 
-            saldoElement.classList.add(
-                "saldo-positivo"
-            );
+    // ==================================================
+    // RESUMO
+    // ==================================================
 
-        }
+    resumoReceitas.textContent =
+        formatarMoeda(
+            receitas
+        );
+
+
+    resumoDespesas.textContent =
+        formatarMoeda(
+            despesas
+        );
+
+
+    resumoSaldo.textContent =
+        formatarMoeda(
+            saldo
+        );
+
+
+    // ==================================================
+    // CLASSE DO SALDO
+    // ==================================================
+
+    saldoElement.classList.remove(
+        "saldo-positivo",
+        "saldo-negativo"
+    );
+
+
+    if (saldo < 0) {
+
+        saldoElement.classList.add(
+            "saldo-negativo"
+        );
+
+    }
+
+    else {
+
+        saldoElement.classList.add(
+            "saldo-positivo"
+        );
 
     }
 
@@ -828,19 +851,12 @@ function atualizarResumo() {
 
 
 // ======================================================
-// 14. CONTADOR DE MOVIMENTAÇÕES
+// 13. CONTADOR
 // ======================================================
 
 function atualizarContador(
     quantidade
 ) {
-
-    if (!contadorRegistros) {
-
-        return;
-
-    }
-
 
     if (quantidade === 0) {
 
@@ -859,174 +875,14 @@ function atualizarContador(
 
 
 // ======================================================
-// 15. GRÁFICO
-// ======================================================
-
-function criarGrafico() {
-
-    const canvas =
-        document.getElementById(
-            "graficoFinanceiro"
-        );
-
-
-    if (!canvas) {
-
-        return;
-
-    }
-
-
-    // Verifica se Chart.js está carregado
-
-    if (
-        typeof Chart === "undefined"
-    ) {
-
-        console.warn(
-            "Chart.js não foi carregado."
-        );
-
-        return;
-
-    }
-
-
-    const receitas =
-        calcularReceitas();
-
-
-    const despesas =
-        calcularDespesas();
-
-
-    // Destrói gráfico anterior
-
-    if (grafico) {
-
-        grafico.destroy();
-
-    }
-
-
-    grafico =
-        new Chart(
-            canvas,
-            {
-
-                type: "doughnut",
-
-                data: {
-
-                    labels: [
-                        "Receitas",
-                        "Despesas"
-                    ],
-
-                    datasets: [
-
-                        {
-
-                            data: [
-                                receitas,
-                                despesas
-                            ],
-
-                            borderWidth: 0
-
-                        }
-
-                    ]
-
-                },
-
-                options: {
-
-                    responsive: true,
-
-                    maintainAspectRatio: false,
-
-                    plugins: {
-
-                        legend: {
-
-                            position: "bottom"
-
-                        },
-
-                        tooltip: {
-
-                            callbacks: {
-
-                                label:
-                                    function (
-                                        contexto
-                                    ) {
-
-                                        const valor =
-                                            contexto.raw;
-
-
-                                        return (
-                                            " " +
-                                            formatarMoeda(
-                                                valor
-                                            )
-                                        );
-
-                                    }
-
-                            }
-
-                        }
-
-                    }
-
-                }
-
-            }
-        );
-
-}
-
-
-// ======================================================
-// 16. ORDENAR POR DATA
-// ======================================================
-
-function ordenarPorData() {
-
-    transacoes.sort(
-        (
-            a,
-            b
-        ) => {
-
-            return new Date(
-                b.data
-            ) - new Date(
-                a.data
-            );
-
-        }
-    );
-
-
-    salvarDados();
-
-
-    atualizarAplicacao();
-
-}
-
-
-// ======================================================
-// 17. FORMATAR MOEDA
+// 14. FORMATAÇÃO DE MOEDA
 // ======================================================
 
 function formatarMoeda(valor) {
 
-    return Number(valor).toLocaleString(
+    return Number(
+        valor
+    ).toLocaleString(
         "pt-BR",
         {
 
@@ -1041,7 +897,7 @@ function formatarMoeda(valor) {
 
 
 // ======================================================
-// 18. FORMATAR DATA
+// 15. FORMATAÇÃO DE DATA
 // ======================================================
 
 function formatarData(data) {
@@ -1057,7 +913,9 @@ function formatarData(data) {
         data.split("-");
 
 
-    if (partes.length !== 3) {
+    if (
+        partes.length !== 3
+    ) {
 
         return data;
 
@@ -1076,17 +934,10 @@ function formatarData(data) {
 
 
 // ======================================================
-// 19. ALTERAR BOTÃO
+// 16. ALTERAR TEXTO DO BOTÃO
 // ======================================================
 
 function alterarBotao(texto) {
-
-    if (!botaoSubmit) {
-
-        return;
-
-    }
-
 
     const span =
         botaoSubmit.querySelector(
@@ -1112,7 +963,7 @@ function alterarBotao(texto) {
 
 
 // ======================================================
-// 20. MENSAGEM PARA O USUÁRIO
+// 17. MENSAGEM
 // ======================================================
 
 function mostrarMensagem(texto) {
@@ -1123,12 +974,12 @@ function mostrarMensagem(texto) {
         );
 
 
-    mensagem.textContent =
-        texto;
-
-
     mensagem.className =
         "mensagem-js";
+
+
+    mensagem.textContent =
+        texto;
 
 
     document.body.appendChild(
@@ -1137,7 +988,7 @@ function mostrarMensagem(texto) {
 
 
     setTimeout(
-        () => {
+        function () {
 
             mensagem.remove();
 
@@ -1149,7 +1000,7 @@ function mostrarMensagem(texto) {
 
 
 // ======================================================
-// 21. ATUALIZAR TODA A APLICAÇÃO
+// 18. ATUALIZAR A APLICAÇÃO
 // ======================================================
 
 function atualizarAplicacao() {
@@ -1158,18 +1009,23 @@ function atualizarAplicacao() {
 
     atualizarResumo();
 
-    criarGrafico();
+
+    // O gráfico está no chart.js
+
+    if (
+        typeof criarGrafico ===
+        "function"
+    ) {
+
+        criarGrafico();
+
+    }
 
 }
 
 
 // ======================================================
-// 22. INICIALIZAÇÃO
+// 19. INICIAR A APLICAÇÃO
 // ======================================================
 
 atualizarAplicacao();
-
-
-// ======================================================
-// FIM DO JAVASCRIPT
-// ======================================================
